@@ -13,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
+  final GlobalKey<ScaffoldState> _scafoldKey = GlobalKey();
   double a;
   double b;
   String o;
@@ -22,16 +23,30 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool sub = false;
   bool mul = false;
   bool div = false;
-  @override
+
   void _submit() async {
-    final cal = Provider.of<Calculation>(context, listen: false);
     if (!_formKey.currentState.validate()) {
+      return;
+    }
+    if (o == null) {
+      _scafoldKey.currentState.showSnackBar(SnackBar(
+        backgroundColor: Theme.of(context).errorColor,
+        content: Text(
+          'TO COMPLETE THIS EQUATION YOU MUST SELECT ONE OF THIS (+,×,÷,-)',
+          style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.center,
+        ),
+      ));
       return;
     }
     FocusScope.of(context).unfocus();
     _formKey.currentState.save();
-    await Provider.of<Calculation>(context, listen: false)
-        .backgroundServices(a, b, o, time);
+    try {
+      await Provider.of<Calculation>(context, listen: false)
+          .backgroundServices(a, b, o, time);
+    } catch (e) {
+      throw e;
+    }
   }
 
   @override
@@ -39,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final cal = Provider.of<Calculation>(context, listen: false);
 
     return Scaffold(
+      key: _scafoldKey,
       appBar: AppBar(
         title: Text('MathQuestion '),
         actions: [
@@ -110,6 +126,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         FlatButton(
+                          shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.amberAccent)),
                           color: add ? Colors.amber : Colors.transparent,
                           child: Text('+'),
                           onPressed: () {
@@ -123,6 +141,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           },
                         ),
                         FlatButton(
+                          shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.amberAccent)),
                           color: sub ? Colors.amber : Colors.transparent,
                           child: Text('-'),
                           onPressed: () {
@@ -136,6 +156,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           },
                         ),
                         FlatButton(
+                          shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.amberAccent)),
                           color: mul ? Colors.amber : Colors.transparent,
                           child: Text('×'),
                           onPressed: () {
@@ -149,6 +171,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           },
                         ),
                         FlatButton(
+                          shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.amberAccent)),
                           color: div ? Colors.amber : Colors.transparent,
                           child: Text('÷'),
                           onPressed: () {
