@@ -1,4 +1,4 @@
-# equationApp
+# EquationApp
 
 A new Flutter project.
 
