@@ -3,16 +3,12 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 import 'package:flutter/services.dart';
+import 'package:location/location.dart';
 
 class Calculation extends ChangeNotifier {
   List<MathEquation> _items = [];
   List<Equation> _pindingItems = [];
-  DateTime _getId;
-  double add;
-  double sub;
-  double mul;
-  double div;
-  DateTime get id => _getId;
+  Location _location = Location();
 
   List<MathEquation> get items {
     return [..._items];
@@ -22,24 +18,28 @@ class Calculation extends ChangeNotifier {
     return [..._pindingItems];
   }
 
-  _addEquation(double a, double b) {
-    return add = a + b;
+  double _addEquation(double a, double b) {
+    var result = 0.0;
+    result = a + b;
+    return result;
   }
 
-  _subEquation(double a, double b) {
-    return sub = a - b;
+  double _subEquation(double a, double b) {
+    var result = 0.0;
+    result = a - b;
+    return result;
   }
 
-  _mulEquation(double a, double b) {
-    return mul = a * b;
+  double _mulEquation(double a, double b) {
+    var result = 0.0;
+    result = a * b;
+    return result;
   }
 
   double _divEquation(double a, double b) {
-    return div = a / b;
-  }
-
-  Equation findById(DateTime id) {
-    return _pindingItems.firstWhere((equation) => equation.id == id);
+    var result = 0.0;
+    result = a / b;
+    return result;
   }
 
   Future<void> backgroundServices(
@@ -66,7 +66,6 @@ class Calculation extends ChangeNotifier {
                             .toString(),
                 time: _equations[i].time));
             _items.addAll(_result);
-            removeEquation(_equations[i].id, _equations[i].time);
             notifyListeners();
           });
         } else if (_equations[i].op == '-') {
@@ -79,7 +78,6 @@ class Calculation extends ChangeNotifier {
                             .toString(),
                 time: _equations[i].time));
             _items.addAll(_result);
-            removeEquation(_equations[i].id, _equations[i].time);
             notifyListeners();
           });
         } else if (_equations[i].op == '×' ||
@@ -94,21 +92,21 @@ class Calculation extends ChangeNotifier {
                             .toString(),
                 time: _equations[i].time));
             _items.addAll(_result);
-            removeEquation(_equations[i].id, _equations[i].time);
             notifyListeners();
           });
         } else {
           Future.delayed(Duration(seconds: _equations[i].time), () {
             _result.add(MathEquation(
                 id: _equations[i].id,
-                result:
-                    '${_equations[i].a} ${_equations[i].op} ${_equations[i].a} = ' +
+                result: _divEquation(_equations[i].a, _equations[i].c) ==
+                        double.infinity
+                    ? '${_equations[i].a} ${_equations[i].op} ${_equations[i].a} = NaNaN'
+                    : '${_equations[i].a} ${_equations[i].op} ${_equations[i].a} = ' +
                         _divEquation(_equations[i].a, _equations[i].c)
-                            .toStringAsFixed(2),
+                            .toString(),
                 time: _equations[i].time));
 
             _items.addAll(_result);
-            removeEquation(_equations[i].id, _equations[i].time);
             notifyListeners();
           });
         }
@@ -118,17 +116,26 @@ class Calculation extends ChangeNotifier {
     }
   }
 
-  void removeEquation(DateTime id, int time) {
-    print(id);
-    Future.delayed(Duration(seconds: time), () {
-      print('id');
-      _pindingItems.remove(id);
-      notifyListeners();
-    });
-  }
-
-  clearPending() {
-    _pindingItems = [];
-    notifyListeners();
+// TO GET CUREENT USER LOCATION
+  void getLocation(BuildContext context) async {
+    _location.requestPermission();
+    await _location.hasPermission();
+    var address = await _location.getLocation();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Container(
+          height: 100,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text('Lat: ${address.latitude}'),
+              Text('Long: ${address.longitude}'),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

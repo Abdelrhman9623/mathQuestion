@@ -20,6 +20,16 @@ void main() {
 
   double subEquation(double a, double b) {
     var result = 0.0;
+    if (a < b) {
+      result = b - a;
+      return result;
+    }
+    result = a - b;
+    return result;
+  }
+
+  double subEquationWithNagative(double a, double b) {
+    var result = 0.0;
     result = a - b;
     return result;
   }
@@ -36,18 +46,26 @@ void main() {
     return result;
   }
 
-  test('add equation', () {
-    expect(addEquation(10, 12), equals(22));
+  test('Add equation', () {
+    expect(addEquation(10, 12), equals(10 + 12));
   });
 
-  test('Sub Equation', () {
-    expect(subEquation(10, 12), equals(-2));
-  });
-  test('mul Function', () {
-    expect(mulEquation(10, 12), equals(120));
+  test('Subtract Equation ', () {
+    expect(subEquation(15, 18), equals(3));
   });
 
-  test('Divid Function', () {
-    expect(divEquation(10, 12), equals(0.8333333333333334));
+  test('Subtract Equation with negative value', () {
+    expect(subEquationWithNagative(10, 12), equals(-2));
+  });
+
+  test('Multiply Function', () {
+    expect(mulEquation(0, 12), equals(0));
+  });
+  test('Dividing Function', () {
+    expect(divEquation(12, 2), equals(6));
+  });
+
+  test('Dividing Function with infinity value to check', () {
+    expect(divEquation(12, 0), equals(double.infinity));
   });
 }

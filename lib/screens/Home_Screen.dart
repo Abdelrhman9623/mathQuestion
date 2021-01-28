@@ -13,9 +13,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  AnimationController animation;
-  Location _location = Location();
-  Widget result;
   double a;
   double b;
   String o;
@@ -26,26 +23,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool mul = false;
   bool div = false;
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getLocation();
-  }
-
-  Future<void> getLocation() async {
-    var per = await _location.hasPermission();
-    if (per.index != null) {
-      var address = await _location.getLocation();
-
-      print(address);
-    } else {
-      _location.requestPermission();
-      var address = await _location.getLocation();
-
-      print(address);
-    }
-  }
-
   void _submit() async {
     final cal = Provider.of<Calculation>(context, listen: false);
     if (!_formKey.currentState.validate()) {
@@ -53,9 +30,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
     FocusScope.of(context).unfocus();
     _formKey.currentState.save();
-    // setState(() {
-    //   isShow = true;
-    // });
     await Provider.of<Calculation>(context, listen: false)
         .backgroundServices(a, b, o, time);
   }
@@ -67,6 +41,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: Text('MathQuestion '),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.room),
+            onPressed: () => cal.getLocation(context),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Wrap(
@@ -112,6 +92,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       validator: (val) {
                         if (val.isEmpty) {
                           return 'Please enter number';
+                        }
+                        if (val == '0' && o == '/') {
+                          return 'Nubmer must be bigger then 0';
                         }
                       },
 
