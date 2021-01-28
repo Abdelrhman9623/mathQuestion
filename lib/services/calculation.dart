@@ -56,8 +56,8 @@ class Calculation extends ChangeNotifier {
       _pindingItems.addAll(_equations);
       List<MathEquation> _result = [];
       for (var i = 0; i < _equations.length; i++) {
-        if (_equations[i].op == '+') {
-          Future.delayed(Duration(seconds: _equations[i].time), () {
+        Future.delayed(Duration(seconds: _equations[i].time), () {
+          if (_equations[i].op == '+') {
             _result.add(MathEquation(
                 id: _equations[i].id,
                 result:
@@ -66,10 +66,7 @@ class Calculation extends ChangeNotifier {
                             .toString(),
                 time: _equations[i].time));
             _items.addAll(_result);
-            notifyListeners();
-          });
-        } else if (_equations[i].op == '-') {
-          Future.delayed(Duration(seconds: _equations[i].time), () {
+          } else if (_equations[i].op == '-') {
             _result.add(MathEquation(
                 id: _equations[i].id,
                 result:
@@ -78,12 +75,9 @@ class Calculation extends ChangeNotifier {
                             .toString(),
                 time: _equations[i].time));
             _items.addAll(_result);
-            notifyListeners();
-          });
-        } else if (_equations[i].op == '×' ||
-            _equations[i].op == '*' ||
-            _equations[i].op == 'x') {
-          Future.delayed(Duration(seconds: _equations[i].time), () {
+          } else if (_equations[i].op == '×' ||
+              _equations[i].op == '*' ||
+              _equations[i].op == 'x') {
             _result.add(MathEquation(
                 id: _equations[i].id,
                 result:
@@ -92,10 +86,7 @@ class Calculation extends ChangeNotifier {
                             .toString(),
                 time: _equations[i].time));
             _items.addAll(_result);
-            notifyListeners();
-          });
-        } else {
-          Future.delayed(Duration(seconds: _equations[i].time), () {
+          } else {
             _result.add(MathEquation(
                 id: _equations[i].id,
                 result: _divEquation(_equations[i].a, _equations[i].c) ==
@@ -107,9 +98,9 @@ class Calculation extends ChangeNotifier {
                 time: _equations[i].time));
 
             _items.addAll(_result);
-            notifyListeners();
-          });
-        }
+          }
+          notifyListeners();
+        });
       }
     } catch (e) {
       throw e;
